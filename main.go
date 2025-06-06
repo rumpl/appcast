@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
+	"sort"
 	"strings"
 
 	"golang.org/x/sync/errgroup"
@@ -18,15 +19,19 @@ var URLs = []struct {
 }{
 	{
 		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Mac ARM",
+		title: "macOS Apple silicon",
 	},
 	{
-		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Mac AMD",
+		url:   "https://desktop.docker.com/mac/main/amd64/appcast.xml",
+		title: "macOS Intel",
 	},
 	{
-		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Windows",
+		url:   "https://desktop.docker.com/win/main/amd64/appcast.xml",
+		title: "Windows AMD",
+	},
+	{
+		url:   "https://desktop.docker.com/win/main/arm64/appcast.xml",
+		title: "Windows ARM",
 	},
 }
 
@@ -83,7 +88,7 @@ func run() error {
 			}
 
 			var response response
-			body, _ := ioutil.ReadAll(res.Body)
+			body, _ := io.ReadAll(res.Body)
 
 			if err := xml.Unmarshal(body, &response); err != nil {
 				return err
@@ -102,6 +107,10 @@ func run() error {
 	if err := eg.Wait(); err != nil {
 		return err
 	}
+
+	sort.Slice(responses, func(i, j int) bool {
+		return strings.ToLower(responses[i].title) < strings.ToLower(responses[j].title)
+	})
 
 	for _, response := range responses {
 		fmt.Println(response.title)
