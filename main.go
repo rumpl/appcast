@@ -108,6 +108,10 @@ func run() error {
 		return err
 	}
 
+	sort.Slice(responses, func(i, j int) bool {
+		return strings.ToLower(responses[i].title) < strings.ToLower(responses[j].title)
+	})
+
 	for _, response := range responses {
 		fmt.Println(response.title)
 		for _, item := range response.responses {
