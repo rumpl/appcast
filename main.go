@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sort"
 	"strings"
 
 	"golang.org/x/sync/errgroup"
@@ -18,15 +19,19 @@ var URLs = []struct {
 }{
 	{
 		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Mac ARM",
+		title: "macOS Apple silicon",
 	},
 	{
-		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Mac AMD",
+		url:   "https://desktop.docker.com/mac/main/amd64/appcast.xml",
+		title: "macOS Intel",
 	},
 	{
-		url:   "https://desktop.docker.com/mac/main/arm64/appcast.xml",
-		title: "Windows",
+		url:   "https://desktop.docker.com/win/main/amd64/appcast.xml",
+		title: "Windows AMD",
+	},
+	{
+		url:   "https://desktop.docker.com/win/main/arm64/appcast.xml",
+		title: "Windows ARM",
 	},
 }
 
